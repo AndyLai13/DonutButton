@@ -37,6 +37,7 @@ public class DonutButtonsView extends View {
 	private float iconRadius;
 	private float circleButtonSize;
 	private float circularButtonSize;
+	private Callback callback;
 
 	public DonutButtonsView(Context context) {
 		this(context, null);
@@ -62,15 +63,19 @@ public class DonutButtonsView extends View {
 		setFocusable(true);
 	}
 
-	private void fillWithNormalColor() {
-		for (int i = 0; i < COUNT; i++)
-			colors.add(COLOR_NORMAL);
+	public void setCallback(Callback callback) {
+		this.callback = callback;
 	}
 
 	public void setDefaultIndex(int index) {
 		if (index >= COUNT)
 			throw new IndexOutOfBoundsException("Index should be smaller than count!");
 		colors.set(index, COLOR_PRESSED);
+	}
+
+	private void fillWithNormalColor() {
+		for (int i = 0; i < COUNT; i++)
+			colors.add(COLOR_NORMAL);
 	}
 
 	private void fillWithDefaultIcons() {
@@ -173,24 +178,45 @@ public class DonutButtonsView extends View {
 			float translateX = x - center.x;
 			float translateY = y - center.y;
 			double distance = Math.sqrt(Math.pow(translateX, 2) + Math.pow(translateY, 2));
-			if (distance < circleRadius) {
-				onTouchCenterButton();
-			} else if (distance > innerRadius) {
-				onTouchCircularButton(translateX, translateY);
-			} else {
-				onTouchCircularTransparentArea();
-			}
+			double degree = getDegree(translateX, translateY);
+			categorizeTouchArea(distance, degree);
+			invalidate();
+			return true;
+		} else if (event.getAction() == MotionEvent.ACTION_UP) {
+			performClick();
+			return true;
 		}
-		invalidate();
-		return super.onTouchEvent(event);
+		return false;
+	}
+
+	@Override
+	public boolean performClick() {
+		return super.performClick();
+	}
+
+	private void categorizeTouchArea(double distance, double degree) {
+		if (distance < circleRadius) {
+			onTouchCenterButton();
+		} else if (circleRadius < distance && distance < innerRadius) {
+			onTouchCircularTransparentArea();
+		} else if (innerRadius < distance && distance < outerRadius) {
+			onTouchCircularButton(degree);
+		} else {
+			onTouchUndefinedArea();
+		}
 	}
 
 	private void onTouchCenterButton() {
-		Log.d("Andy", "in center");
+		if (callback!= null)
+			callback.onCenterTouched();
+		Log.d("Andy", "onTouchCenterButton");
 	}
 
-	private void onTouchCircularButton(float x, float y) {
-		double degree = getDegree(x, y);
+	private void onTouchCircularTransparentArea() {
+		Log.d("Andy", "onTouchCircularTransparentArea");
+	}
+
+	private void onTouchCircularButton(double degree) {
 		int index = getIndex(degree);
 		for (int i = 0; i < colors.size(); i++) {
 			if (i == index)
@@ -198,10 +224,13 @@ public class DonutButtonsView extends View {
 			else
 				colors.set(i, COLOR_NORMAL);
 		}
+
+		if (callback!= null)
+			callback.onCircularButtonTouched(index);
 	}
 
-	private void onTouchCircularTransparentArea() {
-		Log.d("Andy", "on transparent area");
+	private void onTouchUndefinedArea() {
+		Log.d("Andy", "onTouchUndefinedArea");
 	}
 
 	private double getDegree(double x, double y) {
@@ -223,5 +252,11 @@ public class DonutButtonsView extends View {
 
 	private Drawable getCompatDrawable(int resId) {
 		return ResourcesCompat.getDrawable(getResources(), resId, null);
+	}
+
+	public interface Callback {
+		void onCenterTouched();
+
+		void onCircularButtonTouched(int index);
 	}
 }

@@ -13,6 +13,16 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 
 		DonutButtonsView view = findViewById(R.id.donutButtonView);
-		view.setOnClickListener(v -> Log.d("Andy", "onclick"));
+		view.setCallback(new DonutButtonsView.Callback() {
+			@Override
+			public void onCenterTouched() {
+				Log.d("Andy", "onCenterTouched");
+			}
+
+			@Override
+			public void onCircularButtonTouched(int index) {
+				Log.d("Andy", "onCircularButtonTouched " + index);
+			}
+		});
 	}
 }
