@@ -12,7 +12,7 @@ public class MainActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		DonutButtonsView view = findViewById(R.id.circularView);
+		DonutButtonsView view = findViewById(R.id.donutButtonView);
 		view.setOnClickListener(v -> Log.d("Andy", "onclick"));
 	}
 }

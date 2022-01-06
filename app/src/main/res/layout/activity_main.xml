@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent" >
 
         <com.andylai.donutbuttons.DonutButtonsView
-            android:id="@+id/circularView"
+            android:id="@+id/donutButtonView"
             android:layout_width="150dp"
             android:layout_height="150dp"/>
     </LinearLayout>

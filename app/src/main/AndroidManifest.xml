@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CircularView">
+        android:theme="@style/Theme.DonutButtonView">
         <activity
             android:name="com.andylai.donutbuttons.MainActivity"
             android:exported="true">
