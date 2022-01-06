@@ -73,20 +73,19 @@ public class DonutButtonsView extends View {
 		colors.set(index, COLOR_PRESSED);
 	}
 
+	public void setIconDrawables(List<Drawable> drawables) {
+		icons.clear();
+		icons.addAll(drawables);
+	}
+
 	private void fillWithNormalColor() {
 		for (int i = 0; i < COUNT; i++)
 			colors.add(COLOR_NORMAL);
 	}
 
 	private void fillWithDefaultIcons() {
-		icons.add(getCompatDrawable(R.drawable.ic_anno_eraser_white));
-		icons.add(getCompatDrawable(R.drawable.ic_anno_pen_white));
-		icons.add(getCompatDrawable(R.drawable.ic_anno_brush_white));
-		icons.add(getCompatDrawable(R.drawable.ic_anno_close_white));
-		icons.add(getCompatDrawable(R.drawable.ic_anno_delete_white));
-		icons.add(getCompatDrawable(R.drawable.ic_anno_undo_white));
-		icons.add(getCompatDrawable(R.drawable.ic_anno_redo_white));
-		icons.add(getCompatDrawable(R.drawable.ic_anno_save_white));
+		for (int i = 0 ; i< COUNT; i++)
+			icons.add(getCompatDrawable(R.drawable.ic_donut_pen));
 	}
 
 	@Override
@@ -128,7 +127,7 @@ public class DonutButtonsView extends View {
 
 	private Drawable getIcon(int index) {
 		if (icons.isEmpty())
-			return getCompatDrawable(R.drawable.ic_anno_pen_green);
+			return getCompatDrawable(R.drawable.ic_donut_pen);
 		else
 			return icons.get(index);
 	}
@@ -142,7 +141,7 @@ public class DonutButtonsView extends View {
 	private void drawCentralCircle(Canvas canvas) {
 		paint.setColor(COLOR_NORMAL);
 		canvas.drawCircle(center.x, center.y, circleRadius, paint);
-		Drawable drawableIcon = getCompatDrawable(R.drawable.ic_eva_move_fill);
+		Drawable drawableIcon = getCompatDrawable(R.drawable.ic_donut_move);
 		drawableIcon.setBounds(new Rect(
 				(int) (center.x - circleButtonSize),
 				(int) (center.y - circleButtonSize),

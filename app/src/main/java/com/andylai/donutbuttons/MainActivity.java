@@ -1,9 +1,14 @@
 package com.andylai.donutbuttons;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,5 +29,19 @@ public class MainActivity extends AppCompatActivity {
 				Log.d("Andy", "onCircularButtonTouched " + index);
 			}
 		});
+		List<Drawable> icons = new ArrayList<>();
+		icons.add(getCompatDrawable(R.drawable.ic_donut_eraser));
+		icons.add(getCompatDrawable(R.drawable.ic_donut_pen));
+		icons.add(getCompatDrawable(R.drawable.ic_donut_brush));
+		icons.add(getCompatDrawable(R.drawable.ic_donut_close));
+		icons.add(getCompatDrawable(R.drawable.ic_donut_delete));
+		icons.add(getCompatDrawable(R.drawable.ic_donut_undo));
+		icons.add(getCompatDrawable(R.drawable.ic_donut_redo));
+		icons.add(getCompatDrawable(R.drawable.ic_donut_save));
+		view.setIconDrawables(icons);
+	}
+
+	private Drawable getCompatDrawable(int resId) {
+		return ResourcesCompat.getDrawable(getResources(), resId, null);
 	}
 }
