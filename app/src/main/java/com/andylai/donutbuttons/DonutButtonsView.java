@@ -254,18 +254,10 @@ public class DonutButtonsView extends View {
 	private static class ArcButton {
 		private int color;
 		private Drawable drawable;
-		private ButtonState state;
 
 		public ArcButton(Context context) {
 			this.color = COLOR_NORMAL;
 			this.drawable = Utils.getCompatDrawable(context.getResources(), R.drawable.ic_donut_pen);
-			this.state = ButtonState.Normal;
-		}
-
-		public ArcButton(int color, Drawable drawable, ButtonState state) {
-			this.color = color;
-			this.drawable = drawable;
-			this.state = state;
 		}
 
 		public int getColor() {
@@ -276,25 +268,12 @@ public class DonutButtonsView extends View {
 			return drawable;
 		}
 
-		public ButtonState getState() {
-			return state;
-		}
-
 		public void setColor(int color) {
 			this.color = color;
 		}
 
 		public void setDrawable(Drawable drawable) {
 			this.drawable = drawable;
-		}
-
-		public void setState(ButtonState state) {
-			this.state = state;
-		}
-
-		enum ButtonState {
-			Selected,
-			Normal
 		}
 	}
 }
