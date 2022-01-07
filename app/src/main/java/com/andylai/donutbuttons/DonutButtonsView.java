@@ -1,5 +1,6 @@
 package com.andylai.donutbuttons;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -16,7 +17,6 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +25,7 @@ public class DonutButtonsView extends View {
 	private final static int COUNT = 8;
 	private final static int COLOR_PRESSED = Color.RED;
 	private final static int COLOR_NORMAL = Color.WHITE;
-	private final List<Integer> colors = new ArrayList<>();
-	private final List<Drawable> icons = new ArrayList<>();
+	private final List<ArcButton> arcButtons = new ArrayList<>();
 	private final Paint paint = new Paint();
 	private final PointF center = new PointF();
 	private final float sweepAngle = 360f / COUNT;
@@ -56,9 +55,7 @@ public class DonutButtonsView extends View {
 	}
 
 	private void init() {
-		fillWithNormalColor();
-		fillWithDefaultIcons();
-		setDefaultIndex(0);
+		initArcButtons();
 		setClickable(true);
 		setFocusable(true);
 	}
@@ -70,22 +67,24 @@ public class DonutButtonsView extends View {
 	public void setDefaultIndex(int index) {
 		if (index >= COUNT)
 			throw new IndexOutOfBoundsException("Index should be smaller than count!");
-		colors.set(index, COLOR_PRESSED);
+		arcButtons.get(index).setColor(COLOR_PRESSED);
 	}
 
 	public void setIconDrawables(List<Drawable> drawables) {
-		icons.clear();
-		icons.addAll(drawables);
-	}
-
-	private void fillWithNormalColor() {
+		if (drawables.size() != arcButtons.size())
+			throw new IndexOutOfBoundsException("Size is not matched");
 		for (int i = 0; i < COUNT; i++)
-			colors.add(COLOR_NORMAL);
+			arcButtons.get(i).setDrawable(drawables.get(i));
 	}
 
-	private void fillWithDefaultIcons() {
-		for (int i = 0 ; i< COUNT; i++)
-			icons.add(getCompatDrawable(R.drawable.ic_donut_pen));
+	public void setPressed(int index) {
+		setArcBtnPressed(index);
+		invalidate();
+	}
+
+	private void initArcButtons() {
+		for (int i = 0; i < COUNT; i++)
+			arcButtons.add(new ArcButton(getContext()));
 	}
 
 	@Override
@@ -109,27 +108,20 @@ public class DonutButtonsView extends View {
 		RectF rect = new RectF(0, 0, getWidth(), getHeight());
 		for (int i = 0; i < COUNT; i++) {
 			float startAngle = sweepAngle * i;
-			paint.setColor(colors.get(i));
+			paint.setColor(arcButtons.get(i).getColor());
 			canvas.drawArc(rect, startAngle, sweepAngle, true, paint);
 		}
 	}
 
 	private void drawIcons(Canvas canvas) {
 		float firstAngle = sweepAngle / 2;
-		for (int i = 0; i < colors.size(); i++) {
+		for (int i = 0; i < COUNT; i++) {
 			float angle = firstAngle + sweepAngle * i;
 			Rect iconRect = getIconRect(iconRadius, circularButtonSize, center, angle);
-			Drawable drawableIcon = getIcon(i);
+			Drawable drawableIcon = arcButtons.get(i).getDrawable();
 			drawableIcon.setBounds(iconRect);
 			drawableIcon.draw(canvas);
 		}
-	}
-
-	private Drawable getIcon(int index) {
-		if (icons.isEmpty())
-			return getCompatDrawable(R.drawable.ic_donut_pen);
-		else
-			return icons.get(index);
 	}
 
 	private void drawCentralCircular(Canvas canvas) {
@@ -168,68 +160,68 @@ public class DonutButtonsView extends View {
 		return new Rect((int) l, (int) t, (int) r, (int) b);
 	}
 
+	@SuppressLint("ClickableViewAccessibility")
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+		float x = event.getX();
+		float y = event.getY();
+		PointF center = new PointF(getWidth() / 2f, getHeight() / 2f);
+		float translateX = x - center.x;
+		float translateY = y - center.y;
+		double distance = Math.sqrt(Math.pow(translateX, 2) + Math.pow(translateY, 2));
+		double degree = getDegree(translateX, translateY);
+
+		if (distance < circleRadius) {
+			return onTouchCenterButton(event);
+		} else if (circleRadius < distance && distance < innerRadius) {
+			return onTouchCircularTransparentArea(event);
+		} else if (innerRadius < distance && distance < outerRadius) {
+			return onTouchCircularButton(event, degree);
+		} else {
+			return onTouchUndefinedArea(event);
+		}
+	}
+
+	private boolean onTouchCenterButton(MotionEvent event) {
+		if (callback != null)
+			callback.onCenterTouched();
+		Log.d("Andy", "onTouchCenterButton");
+		return onTouchEvent(event);
+	}
+
+	private boolean onTouchCircularTransparentArea(MotionEvent event) {
+		Log.d("Andy", "onTouchCircularTransparentArea");
+		return super.onTouchEvent(event);
+	}
+
+	private boolean onTouchCircularButton(MotionEvent event, double degree) {
+		int index = getIndex(degree);
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			float x = event.getX();
-			float y = event.getY();
-			PointF center = new PointF(getWidth() / 2f, getHeight() / 2f);
-			float translateX = x - center.x;
-			float translateY = y - center.y;
-			double distance = Math.sqrt(Math.pow(translateX, 2) + Math.pow(translateY, 2));
-			double degree = getDegree(translateX, translateY);
-			categorizeTouchArea(distance, degree);
+			setArcBtnPressed(index);
 			invalidate();
 			return true;
 		} else if (event.getAction() == MotionEvent.ACTION_UP) {
-			performClick();
+			setArcBtnPressed(-1);
+			if (callback != null)
+				callback.onCircularButtonTouched(this, index);
+			invalidate();
 			return true;
 		}
-		return false;
+		return super.onTouchEvent(event);
 	}
 
-	@Override
-	public boolean performClick() {
-		return super.performClick();
-	}
-
-	private void categorizeTouchArea(double distance, double degree) {
-		if (distance < circleRadius) {
-			onTouchCenterButton();
-		} else if (circleRadius < distance && distance < innerRadius) {
-			onTouchCircularTransparentArea();
-		} else if (innerRadius < distance && distance < outerRadius) {
-			onTouchCircularButton(degree);
-		} else {
-			onTouchUndefinedArea();
-		}
-	}
-
-	private void onTouchCenterButton() {
-		if (callback!= null)
-			callback.onCenterTouched();
-		Log.d("Andy", "onTouchCenterButton");
-	}
-
-	private void onTouchCircularTransparentArea() {
-		Log.d("Andy", "onTouchCircularTransparentArea");
-	}
-
-	private void onTouchCircularButton(double degree) {
-		int index = getIndex(degree);
-		for (int i = 0; i < colors.size(); i++) {
+	private void setArcBtnPressed(int index) {
+		for (int i = 0; i < COUNT; i++) {
 			if (i == index)
-				colors.set(i, COLOR_PRESSED);
+				arcButtons.get(i).setColor(COLOR_PRESSED);
 			else
-				colors.set(i, COLOR_NORMAL);
+				arcButtons.get(i).setColor(COLOR_NORMAL);
 		}
-
-		if (callback!= null)
-			callback.onCircularButtonTouched(index);
 	}
 
-	private void onTouchUndefinedArea() {
+	private boolean onTouchUndefinedArea(MotionEvent event) {
 		Log.d("Andy", "onTouchUndefinedArea");
+		return super.onTouchEvent(event);
 	}
 
 	private double getDegree(double x, double y) {
@@ -250,12 +242,59 @@ public class DonutButtonsView extends View {
 	}
 
 	private Drawable getCompatDrawable(int resId) {
-		return ResourcesCompat.getDrawable(getResources(), resId, null);
+		return Utils.getCompatDrawable(getResources(), resId);
 	}
 
 	public interface Callback {
 		void onCenterTouched();
 
-		void onCircularButtonTouched(int index);
+		void onCircularButtonTouched(DonutButtonsView self, int index);
+	}
+
+	private static class ArcButton {
+		private int color;
+		private Drawable drawable;
+		private ButtonState state;
+
+		public ArcButton(Context context) {
+			this.color = COLOR_NORMAL;
+			this.drawable = Utils.getCompatDrawable(context.getResources(), R.drawable.ic_donut_pen);
+			this.state = ButtonState.Normal;
+		}
+
+		public ArcButton(int color, Drawable drawable, ButtonState state) {
+			this.color = color;
+			this.drawable = drawable;
+			this.state = state;
+		}
+
+		public int getColor() {
+			return color;
+		}
+
+		public Drawable getDrawable() {
+			return drawable;
+		}
+
+		public ButtonState getState() {
+			return state;
+		}
+
+		public void setColor(int color) {
+			this.color = color;
+		}
+
+		public void setDrawable(Drawable drawable) {
+			this.drawable = drawable;
+		}
+
+		public void setState(ButtonState state) {
+			this.state = state;
+		}
+
+		enum ButtonState {
+			Selected,
+			Normal
+		}
 	}
 }

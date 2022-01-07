@@ -6,6 +6,7 @@ import androidx.core.content.res.ResourcesCompat;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 
 		DonutButtonsView view = findViewById(R.id.donutButtonView);
+		view.setDefaultIndex(1);
 		view.setCallback(new DonutButtonsView.Callback() {
 			@Override
 			public void onCenterTouched() {
@@ -25,8 +27,9 @@ public class MainActivity extends AppCompatActivity {
 			}
 
 			@Override
-			public void onCircularButtonTouched(int index) {
-				Log.d("Andy", "onCircularButtonTouched " + index);
+			public void onCircularButtonTouched(DonutButtonsView self, int index) {
+				if (index == 0 || index == 1 || index == 2 || index == 8)
+					self.setPressed(index);
 			}
 		});
 		List<Drawable> icons = new ArrayList<>();
