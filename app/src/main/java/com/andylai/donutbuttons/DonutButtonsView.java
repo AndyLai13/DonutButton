@@ -186,7 +186,7 @@ public class DonutButtonsView extends View {
 		if (callback != null)
 			callback.onCenterTouched();
 		Log.d("Andy", "onTouchCenterButton");
-		return onTouchEvent(event);
+		return super.onTouchEvent(event);
 	}
 
 	private boolean onTouchCircularTransparentArea(MotionEvent event) {
