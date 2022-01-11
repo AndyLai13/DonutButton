@@ -17,9 +17,11 @@
         <entry key="app/src/main/res/drawable/ic_anno_undo_white.xml" value="0.3921875" />
         <entry key="app/src/main/res/drawable/ic_annotation_pressed.xml" value="0.3921875" />
         <entry key="app/src/main/res/drawable/ic_donut_brush.xml" value="0.3921875" />
+        <entry key="app/src/main/res/drawable/ic_donut_close.xml" value="0.11018518518518519" />
         <entry key="app/src/main/res/drawable/ic_donut_pen.xml" value="0.23055555555555557" />
         <entry key="app/src/main/res/drawable/ic_donut_undo.xml" value="0.23055555555555557" />
         <entry key="app/src/main/res/drawable/ic_eva_move_fill.xml" value="0.3921875" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.11018518518518519" />
         <entry key="app/src/main/res/drawable/ic_toolbar_annotation_color_bk.xml" value="0.228125" />
         <entry key="app/src/main/res/drawable/ic_toolbar_annotation_color_bk_m.xml" value="0.228125" />
         <entry key="app/src/main/res/drawable/sel_color_1.xml" value="0.228125" />
