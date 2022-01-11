@@ -1,279 +1,240 @@
-package com.andylai.donutbuttons;
+package com.andylai.donutbuttons
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PointF;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.*
+import android.graphics.drawable.Drawable
+import android.util.AttributeSet
+import android.util.Log
+import android.view.MotionEvent
+import android.view.View
+import java.util.*
+import kotlin.math.*
 
-import androidx.annotation.Nullable;
+class DonutButtonsView @JvmOverloads constructor(
+    context: Context?,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
 
-import java.util.ArrayList;
-import java.util.List;
+    companion object {
+        private const val TAG = "DonutButtonsView"
+        private const val COUNT = 8
+        private const val COLOR_PRESSED = Color.RED
+        private const val COLOR_NORMAL = Color.WHITE
+    }
 
-public class DonutButtonsView extends View {
-	private final static int COUNT = 8;
-	private final static int COLOR_PRESSED = Color.RED;
-	private final static int COLOR_NORMAL = Color.WHITE;
-	private final List<ArcButton> arcButtons = new ArrayList<>();
-	private final Paint paint = new Paint();
-	private final PointF center = new PointF();
-	private final float sweepAngle = 360f / COUNT;
+    private val arcButtons: MutableList<ArcButton> = ArrayList()
+    private val pressablePool: MutableList<Int> = ArrayList()
+    private val center = PointF()
+    private val sweepAngle = 360f / COUNT
+    private var circleRadius = 0f
+    private var innerRadius = 0f
+    private var outerRadius = 0f
+    private var iconRadius = 0f
+    private var circleButtonSize = 0f
+    private var circularButtonSize = 0f
+    private var pressedItem = -1
+    private val paint: Paint = Paint().apply {
+        isAntiAlias = true
+        style = Paint.Style.FILL
+    }
 
-	private float circleRadius;
-	private float innerRadius;
-	private float outerRadius;
-	private float iconRadius;
-	private float circleButtonSize;
-	private float circularButtonSize;
-	private Callback callback;
+    var callback: Callback? = null
 
-	public DonutButtonsView(Context context) {
-		this(context, null);
-	}
+    init {
+        initArcButtons()
+        isClickable = true
+        isFocusable = true
+        setLayerType(LAYER_TYPE_SOFTWARE, null)
+    }
 
-	public DonutButtonsView(Context context, @Nullable AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
+    fun setPressableButtons(indices: List<Int>, default: Int) {
+        pressablePool.addAll(indices)
+        if (pressablePool.contains(default)) {
+            setArcBtnPressed(default)
+        } else {
+            Log.d(TAG, "$default is not pressable arc button.")
+        }
+    }
 
-	public DonutButtonsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-		super(context, attrs, defStyleAttr);
-		paint.setAntiAlias(true);
-		paint.setStyle(Paint.Style.FILL);
-		init();
-		setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-	}
+    fun setIconDrawables(drawables: List<Drawable>) {
+        if (drawables.size != arcButtons.size) throw IndexOutOfBoundsException("Size is not matched")
+        for (i in 0 until COUNT) arcButtons[i].drawable = drawables[i]
+    }
 
-	private void init() {
-		initArcButtons();
-		setClickable(true);
-		setFocusable(true);
-	}
+    private fun initArcButtons() {
+        for (i in 0 until COUNT) arcButtons.add(ArcButton(context))
+    }
 
-	public void setCallback(Callback callback) {
-		this.callback = callback;
-	}
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        center[width / 2f] = height / 2f
+        innerRadius = width / 6f
+        outerRadius = width / 2f
+        circleRadius = width / 8f
+        iconRadius = width / 3f
+        circleButtonSize = width / 12f
+        circularButtonSize = width / 4f
+        drawArcs(canvas)
+        drawIcons(canvas)
+        drawCentralCircular(canvas)
+        drawCentralCircle(canvas)
+    }
 
-	public void setDefaultIndex(int index) {
-		if (index >= COUNT)
-			throw new IndexOutOfBoundsException("Index should be smaller than count!");
-		arcButtons.get(index).setColor(COLOR_PRESSED);
-	}
+    private fun drawArcs(canvas: Canvas) {
+        val rect = RectF(0f, 0f, width.toFloat(), height.toFloat())
+        for (i in 0 until COUNT) {
+            val startAngle = sweepAngle * i
+            paint.color = arcButtons[i].color
+            canvas.drawArc(rect, startAngle, sweepAngle, true, paint)
+        }
+    }
 
-	public void setIconDrawables(List<Drawable> drawables) {
-		if (drawables.size() != arcButtons.size())
-			throw new IndexOutOfBoundsException("Size is not matched");
-		for (int i = 0; i < COUNT; i++)
-			arcButtons.get(i).setDrawable(drawables.get(i));
-	}
+    private fun drawIcons(canvas: Canvas) {
+        val firstAngle = sweepAngle / 2
+        for (i in 0 until COUNT) {
+            val angle = firstAngle + sweepAngle * i
+            val iconRect = getIconRect(iconRadius, circularButtonSize, center, angle)
+            val drawableIcon = arcButtons[i].drawable
+            drawableIcon.bounds = iconRect
+            drawableIcon.draw(canvas)
+        }
+    }
 
-	public void setPressed(int index) {
-		setArcBtnPressed(index);
-		invalidate();
-	}
+    private fun drawCentralCircular(canvas: Canvas) {
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+        canvas.drawCircle(center.x, center.y, innerRadius, paint)
+        paint.xfermode = null
+    }
 
-	private void initArcButtons() {
-		for (int i = 0; i < COUNT; i++)
-			arcButtons.add(new ArcButton(getContext()));
-	}
+    private fun drawCentralCircle(canvas: Canvas) {
+        paint.color = COLOR_NORMAL
+        canvas.drawCircle(center.x, center.y, circleRadius, paint)
+        val drawableIcon = getCompatDrawable(R.drawable.ic_donut_move)
+        drawableIcon.bounds = Rect(
+            (center.x - circleButtonSize).toInt(),
+            (center.y - circleButtonSize).toInt(),
+            (center.x + circleButtonSize).toInt(),
+            (center.y + circleButtonSize).toInt()
+        )
+        drawableIcon.draw(canvas)
+    }
 
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
-		center.set(getWidth() / 2f, getHeight() / 2f);
-		innerRadius = getWidth() / 6f;
-		outerRadius = getWidth() / 2f;
-		circleRadius = getWidth() / 8f;
-		iconRadius = getWidth() / 3f;
-		circleButtonSize = getWidth() / 12f;
-		circularButtonSize = getWidth() / 4f;
+    private fun getIconRect(
+        iconRadius: Float,
+        desiredIconSize: Float,
+        center: PointF,
+        angle: Float
+    ): Rect {
+        val angleRadian = Math.toRadians(angle.toDouble())
+        val rCos = iconRadius * cos(angleRadian)
+        val rSin = iconRadius * sin(angleRadian)
+        var l = rCos - desiredIconSize / 2
+        var t = rSin - desiredIconSize / 2
+        var r = rCos + desiredIconSize / 2
+        var b = rSin + desiredIconSize / 2
 
-		drawArcs(canvas);
-		drawIcons(canvas);
-		drawCentralCircular(canvas);
-		drawCentralCircle(canvas);
-	}
+        // translate to center
+        l += center.x.toDouble()
+        t += center.y.toDouble()
+        r += center.x.toDouble()
+        b += center.y.toDouble()
+        return Rect(l.toInt(), t.toInt(), r.toInt(), b.toInt())
+    }
 
-	private void drawArcs(Canvas canvas) {
-		RectF rect = new RectF(0, 0, getWidth(), getHeight());
-		for (int i = 0; i < COUNT; i++) {
-			float startAngle = sweepAngle * i;
-			paint.setColor(arcButtons.get(i).getColor());
-			canvas.drawArc(rect, startAngle, sweepAngle, true, paint);
-		}
-	}
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        val x = event.x
+        val y = event.y
+        val center = PointF(width / 2f, height / 2f)
+        val translateX = x - center.x
+        val translateY = y - center.y
+        val distance = sqrt(translateX.toDouble().pow(2.0) + translateY.toDouble().pow(2.0))
+        val degree = getDegree(translateX.toDouble(), translateY.toDouble())
+        return when {
+            distance < circleRadius -> onTouchCenterButton(event)
+            circleRadius < distance && distance < innerRadius -> onTouchTransparentArea(event)
+            innerRadius < distance && distance < outerRadius -> onTouchArcButton(event, degree)
+            else -> onTouchUndefinedArea(event)
+        }
+    }
 
-	private void drawIcons(Canvas canvas) {
-		float firstAngle = sweepAngle / 2;
-		for (int i = 0; i < COUNT; i++) {
-			float angle = firstAngle + sweepAngle * i;
-			Rect iconRect = getIconRect(iconRadius, circularButtonSize, center, angle);
-			Drawable drawableIcon = arcButtons.get(i).getDrawable();
-			drawableIcon.setBounds(iconRect);
-			drawableIcon.draw(canvas);
-		}
-	}
+    private fun onTouchCenterButton(event: MotionEvent): Boolean {
+        callback?.onCenterTouched()
+        return super.onTouchEvent(event)
+    }
 
-	private void drawCentralCircular(Canvas canvas) {
-		paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-		canvas.drawCircle(center.x, center.y, innerRadius, paint);
-		paint.setXfermode(null);
-	}
+    private fun onTouchTransparentArea(event: MotionEvent): Boolean {
+        return super.onTouchEvent(event)
+    }
 
-	private void drawCentralCircle(Canvas canvas) {
-		paint.setColor(COLOR_NORMAL);
-		canvas.drawCircle(center.x, center.y, circleRadius, paint);
-		Drawable drawableIcon = getCompatDrawable(R.drawable.ic_donut_move);
-		drawableIcon.setBounds(new Rect(
-				(int) (center.x - circleButtonSize),
-				(int) (center.y - circleButtonSize),
-				(int) (center.x + circleButtonSize),
-				(int) (center.y + circleButtonSize)));
-		drawableIcon.draw(canvas);
-	}
+    private fun onTouchArcButton(event: MotionEvent, degree: Double): Boolean {
+        val index = getIndex(degree)
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            setArcBtnPressed(index)
+            return true
+        } else if (event.action == MotionEvent.ACTION_UP) {
+            val isPressable = pressablePool.contains(index)
+            if (isPressable) {
+                if (pressedItem == index) {
+                    callback?.onArcButtonClickUnderPressed(index)
+                } else {
+                    pressedItem = index
+                    callback?.onArcButtonPressed(index)
+                }
+            } else {
+                pressedItem = -1
+                callback?.onArcButtonClick(index)
+                setArcBtnPressed(-1)
+            }
+            return true
+        }
+        return super.onTouchEvent(event)
+    }
 
-	private Rect getIconRect(float iconRadius, float desiredIconSize, PointF center, float angle) {
-		double angleRadian = Math.toRadians(angle);
-		double r_cos = iconRadius * Math.cos(angleRadian);
-		double r_sin = iconRadius * Math.sin(angleRadian);
+    private fun setArcBtnPressed(index: Int) {
+        for (i in 0 until COUNT) {
+            if (i == index)
+                arcButtons[i].color = COLOR_PRESSED
+            else
+                arcButtons[i].color = COLOR_NORMAL
+        }
+        invalidate()
+    }
 
-		double l = (r_cos - desiredIconSize / 2);
-		double t = (r_sin - desiredIconSize / 2);
-		double r = (r_cos + desiredIconSize / 2);
-		double b = (r_sin + desiredIconSize / 2);
+    private fun onTouchUndefinedArea(event: MotionEvent): Boolean {
+        return super.onTouchEvent(event)
+    }
 
-		// translate to center
-		l += center.x;
-		t += center.y;
-		r += center.x;
-		b += center.y;
-		return new Rect((int) l, (int) t, (int) r, (int) b);
-	}
+    private fun getDegree(x: Double, y: Double): Double {
+        val degree = Math.toDegrees(atan2(y, x))
+        return if (degree > 0) degree else 360 + degree
+    }
 
-	@SuppressLint("ClickableViewAccessibility")
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		float x = event.getX();
-		float y = event.getY();
-		PointF center = new PointF(getWidth() / 2f, getHeight() / 2f);
-		float translateX = x - center.x;
-		float translateY = y - center.y;
-		double distance = Math.sqrt(Math.pow(translateX, 2) + Math.pow(translateY, 2));
-		double degree = getDegree(translateX, translateY);
+    /**
+     * Index range from (index - 1) to index, would be 1 for segment 0~1 and 4 for segment 3~4,
+     * therefore return value should be index-1
+     */
+    private fun getIndex(degree: Double): Int {
+        var index = 0
+        while (sweepAngle * index < degree) {
+            index++
+        }
+        return index - 1
+    }
 
-		if (distance < circleRadius) {
-			return onTouchCenterButton(event);
-		} else if (circleRadius < distance && distance < innerRadius) {
-			return onTouchCircularTransparentArea(event);
-		} else if (innerRadius < distance && distance < outerRadius) {
-			return onTouchCircularButton(event, degree);
-		} else {
-			return onTouchUndefinedArea(event);
-		}
-	}
+    private fun getCompatDrawable(resId: Int): Drawable = Utils.getCompatDrawable(resources, resId)
 
-	private boolean onTouchCenterButton(MotionEvent event) {
-		if (callback != null)
-			callback.onCenterTouched();
-		Log.d("Andy", "onTouchCenterButton");
-		return super.onTouchEvent(event);
-	}
+    interface Callback {
+        fun onCenterTouched()
+        fun onArcButtonClick(index: Int)
+        fun onArcButtonPressed(index: Int)
+        fun onArcButtonClickUnderPressed(index: Int)
+    }
 
-	private boolean onTouchCircularTransparentArea(MotionEvent event) {
-		Log.d("Andy", "onTouchCircularTransparentArea");
-		return super.onTouchEvent(event);
-	}
-
-	private boolean onTouchCircularButton(MotionEvent event, double degree) {
-		int index = getIndex(degree);
-		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			setArcBtnPressed(index);
-			invalidate();
-			return true;
-		} else if (event.getAction() == MotionEvent.ACTION_UP) {
-			setArcBtnPressed(-1);
-			if (callback != null)
-				callback.onCircularButtonTouched(this, index);
-			invalidate();
-			return true;
-		}
-		return super.onTouchEvent(event);
-	}
-
-	private void setArcBtnPressed(int index) {
-		for (int i = 0; i < COUNT; i++) {
-			if (i == index)
-				arcButtons.get(i).setColor(COLOR_PRESSED);
-			else
-				arcButtons.get(i).setColor(COLOR_NORMAL);
-		}
-	}
-
-	private boolean onTouchUndefinedArea(MotionEvent event) {
-		Log.d("Andy", "onTouchUndefinedArea");
-		return super.onTouchEvent(event);
-	}
-
-	private double getDegree(double x, double y) {
-		double degree = Math.toDegrees(Math.atan2(y, x));
-		return degree > 0 ? degree : 360 + degree;
-	}
-
-	/**
-	 * Index range from (index - 1) to index, would be 1 for segment 0~1 and 4 for segment 3~4,
-	 * therefore return value should be index-1
-	 */
-	private int getIndex(double degree) {
-		int index = 0;
-		while (sweepAngle * index < degree) {
-			index++;
-		}
-		return index - 1;
-	}
-
-	private Drawable getCompatDrawable(int resId) {
-		return Utils.getCompatDrawable(getResources(), resId);
-	}
-
-	public interface Callback {
-		void onCenterTouched();
-
-		void onCircularButtonTouched(DonutButtonsView self, int index);
-	}
-
-	private static class ArcButton {
-		private int color;
-		private Drawable drawable;
-
-		public ArcButton(Context context) {
-			this.color = COLOR_NORMAL;
-			this.drawable = Utils.getCompatDrawable(context.getResources(), R.drawable.ic_donut_pen);
-		}
-
-		public int getColor() {
-			return color;
-		}
-
-		public Drawable getDrawable() {
-			return drawable;
-		}
-
-		public void setColor(int color) {
-			this.color = color;
-		}
-
-		public void setDrawable(Drawable drawable) {
-			this.drawable = drawable;
-		}
-	}
+    private class ArcButton(context: Context) {
+        var color: Int = COLOR_NORMAL
+        var drawable: Drawable = Utils.getCompatDrawable(context.resources, R.drawable.ic_donut_pen)
+    }
 }
