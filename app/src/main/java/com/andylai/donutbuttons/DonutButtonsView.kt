@@ -163,9 +163,6 @@ class DonutButtonsView @JvmOverloads constructor(
         paint.color = colorNormal
         canvas.drawCircle(center.x, center.y, circleRadius, paint)
         val drawableIcon = getCompatDrawable(R.drawable.ic_donut_move)
-        Log.d("Andy", "${drawableIcon.intrinsicWidth}")
-        Log.d("Andy", "${drawableIcon.minimumWidth}")
-        Log.d("Andy", "${circleButtonSize}")
         drawableIcon.bounds = Rect(
             (center.x - circleButtonSize).toInt(),
             (center.y - circleButtonSize).toInt(),

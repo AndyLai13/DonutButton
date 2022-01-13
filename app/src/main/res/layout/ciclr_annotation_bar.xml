@@ -36,7 +36,7 @@
         android:src="@drawable/sel_color_1"
         app:layout_constraintCircle="@id/donut"
         app:layout_constraintCircleAngle="@dimen/angle_pen_1"
-        app:layout_constraintCircleRadius="@dimen/radius" />
+        app:layout_constraintCircleRadius="@dimen/circle_radius" />
 
     <ImageView
         android:id="@+id/penBtn2"
@@ -46,7 +46,7 @@
         android:src="@drawable/sel_color_2"
         app:layout_constraintCircle="@id/donut"
         app:layout_constraintCircleAngle="@dimen/angle_pen_2"
-        app:layout_constraintCircleRadius="@dimen/radius" />
+        app:layout_constraintCircleRadius="@dimen/circle_radius" />
 
     <ImageView
         android:id="@+id/penBtn3"
@@ -56,7 +56,7 @@
         android:src="@drawable/sel_color_3"
         app:layout_constraintCircle="@id/donut"
         app:layout_constraintCircleAngle="@dimen/angle_pen_3"
-        app:layout_constraintCircleRadius="@dimen/radius" />
+        app:layout_constraintCircleRadius="@dimen/circle_radius" />
 
     <ImageView
         android:id="@+id/penBtn4"
@@ -66,7 +66,7 @@
         android:src="@drawable/sel_color_4"
         app:layout_constraintCircle="@id/donut"
         app:layout_constraintCircleAngle="@dimen/angle_pen_4"
-        app:layout_constraintCircleRadius="@dimen/radius" />
+        app:layout_constraintCircleRadius="@dimen/circle_radius" />
 
     <ImageView
         android:id="@+id/penBtn5"
@@ -76,7 +76,7 @@
         android:src="@drawable/sel_color_5"
         app:layout_constraintCircle="@id/donut"
         app:layout_constraintCircleAngle="@dimen/angle_pen_5"
-        app:layout_constraintCircleRadius="@dimen/radius" />
+        app:layout_constraintCircleRadius="@dimen/circle_radius" />
 
     <ImageView
         android:id="@+id/penBtn6"
@@ -86,7 +86,7 @@
         android:src="@drawable/sel_color_6"
         app:layout_constraintCircle="@id/donut"
         app:layout_constraintCircleAngle="@dimen/angle_pen_6"
-        app:layout_constraintCircleRadius="@dimen/radius" />
+        app:layout_constraintCircleRadius="@dimen/circle_radius" />
 
     <ImageView
         android:id="@+id/penBtn7"
@@ -96,7 +96,7 @@
         android:src="@drawable/sel_color_7"
         app:layout_constraintCircle="@id/donut"
         app:layout_constraintCircleAngle="@dimen/angle_pen_7"
-        app:layout_constraintCircleRadius="@dimen/radius" />
+        app:layout_constraintCircleRadius="@dimen/circle_radius" />
 
     <ImageView
         android:id="@+id/penBtn8"
@@ -106,7 +106,7 @@
         android:src="@drawable/sel_color_8"
         app:layout_constraintCircle="@id/donut"
         app:layout_constraintCircleAngle="@dimen/angle_pen_8"
-        app:layout_constraintCircleRadius="@dimen/radius" />
+        app:layout_constraintCircleRadius="@dimen/circle_radius" />
 
     <ImageView
         android:id="@+id/brushBtn1"
@@ -116,7 +116,7 @@
         android:src="@drawable/sel_color_9"
         app:layout_constraintCircle="@id/donut"
         app:layout_constraintCircleAngle="@dimen/angle_brush_1"
-        app:layout_constraintCircleRadius="@dimen/radius" />
+        app:layout_constraintCircleRadius="@dimen/circle_radius" />
 
     <ImageView
         android:id="@+id/brushBtn2"
@@ -126,7 +126,7 @@
         android:src="@drawable/sel_color_10"
         app:layout_constraintCircle="@id/donut"
         app:layout_constraintCircleAngle="@dimen/angle_brush_2"
-        app:layout_constraintCircleRadius="@dimen/radius" />
+        app:layout_constraintCircleRadius="@dimen/circle_radius" />
 
     <ImageView
         android:id="@+id/brushBtn3"
@@ -136,7 +136,7 @@
         android:src="@drawable/sel_color_3"
         app:layout_constraintCircle="@id/donut"
         app:layout_constraintCircleAngle="@dimen/angle_brush_3"
-        app:layout_constraintCircleRadius="@dimen/radius" />
+        app:layout_constraintCircleRadius="@dimen/circle_radius" />
 
     <ImageView
         android:id="@+id/brushBtn4"
@@ -146,7 +146,7 @@
         android:src="@drawable/sel_color_4"
         app:layout_constraintCircle="@id/donut"
         app:layout_constraintCircleAngle="@dimen/angle_brush_4"
-        app:layout_constraintCircleRadius="@dimen/radius" />
+        app:layout_constraintCircleRadius="@dimen/circle_radius" />
 
     <ImageView
         android:id="@+id/brushBtn5"
@@ -156,7 +156,7 @@
         android:src="@drawable/sel_color_5"
         app:layout_constraintCircle="@id/donut"
         app:layout_constraintCircleAngle="@dimen/angle_brush_5"
-        app:layout_constraintCircleRadius="@dimen/radius" />
+        app:layout_constraintCircleRadius="@dimen/circle_radius" />
 
     <ImageView
         android:id="@+id/brushBtn6"
@@ -166,7 +166,7 @@
         android:src="@drawable/sel_color_6"
         app:layout_constraintCircle="@id/donut"
         app:layout_constraintCircleAngle="@dimen/angle_brush_6"
-        app:layout_constraintCircleRadius="@dimen/radius" />
+        app:layout_constraintCircleRadius="@dimen/circle_radius" />
 
     <ImageView
         android:id="@+id/brushBtn7"
@@ -176,7 +176,7 @@
         android:src="@drawable/sel_color_7"
         app:layout_constraintCircle="@id/donut"
         app:layout_constraintCircleAngle="@dimen/angle_brush_7"
-        app:layout_constraintCircleRadius="@dimen/radius" />
+        app:layout_constraintCircleRadius="@dimen/circle_radius" />
 
     <ImageView
         android:id="@+id/brushBtn8"
@@ -186,5 +186,5 @@
         android:src="@drawable/sel_color_8"
         app:layout_constraintCircle="@id/donut"
         app:layout_constraintCircleAngle="@dimen/angle_brush_8"
-        app:layout_constraintCircleRadius="@dimen/radius" />
+        app:layout_constraintCircleRadius="@dimen/circle_radius" />
 </androidx.constraintlayout.widget.ConstraintLayout>

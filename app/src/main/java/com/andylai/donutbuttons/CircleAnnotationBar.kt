@@ -9,39 +9,49 @@ import com.andylai.donutbuttons.ColorPicker.ColorType
 import java.util.ArrayList
 
 class CircleAnnotationBar(view: View) {
-    var viewLocation: PointF = PointF(0f, 0f)
-    var initialPoint: PointF = PointF(0f, 0f)
-    private val openButton = view.findViewById<ImageView>(R.id.moveBtn).apply {
-        isClickable = true
-        setOnTouchListener(object: View.OnTouchListener{
-            override fun onTouch(v: View, event: MotionEvent?): Boolean {
-                when (event?.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        viewLocation.set(view.x, view.y)
-                        initialPoint.set(event.rawX, event.rawY)
-                        return true
-                    }
-                    MotionEvent.ACTION_MOVE -> {
-                        val updateX = viewLocation.x + (event.rawX - initialPoint.x)
-                        val updateY = viewLocation.y + (event.rawY - initialPoint.y)
-                        view.x = updateX
-                        view.y = updateY
+    private val openButton = view.findViewById<ImageView>(R.id.moveBtn)
+        .apply { isClickable = true }
+        .apply { setOnClickListener { setOpen(true) } }
+        .apply {
+            setOnTouchListener(object : View.OnTouchListener {
+                var isMoving = false
+                var viewLocation: PointF = PointF(0f, 0f)
+                var initialPoint: PointF = PointF(0f, 0f)
+                override fun onTouch(v: View, event: MotionEvent?): Boolean {
+                    when (event?.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            viewLocation.set(view.x, view.y)
+                            initialPoint.set(event.rawX, event.rawY)
+                            return true
+                        }
+                        MotionEvent.ACTION_MOVE -> {
+                            val updateX = viewLocation.x + (event.rawX - initialPoint.x)
+                            val updateY = viewLocation.y + (event.rawY - initialPoint.y)
+                            isMoving = updateX > 0.01 && updateY > 0.01
+                            if (isMoving) {
+                                view.x = updateX
+                                view.y = updateY
+                                return true
+                            }
 //                        callback?.onLocationChange()
-                        return true
+                        }
+                        MotionEvent.ACTION_UP -> {
+                            if (!isMoving)
+                                performClick()
+                            isMoving = false
+                            return true
+                        }
                     }
-                    MotionEvent.ACTION_UP -> {
-                        return true
-                    }
+                    return false
                 }
-                return false
-            }
-        })
-    }
+            })
+        }
     private val donutButtonsView = view.findViewById<DonutButtonsView>(R.id.donut)
         .apply { setPressableButtons(listOf(0, 1, 2), 1) }
         .apply {
             callback = object : DonutButtonsView.Callback {
                 override fun onCenterTouched() {
+                    setOpen(false)
                     Log.d("Andy", "onCenterTouched")
                 }
 
@@ -153,12 +163,11 @@ class CircleAnnotationBar(view: View) {
             }
         }
 
-        fun resetVisibility() = setVisibility(View.GONE)
-
         fun setSelectedState(target: Int) {
             forEachIndexed { index, imageView -> imageView.isSelected = target == index }
         }
 
+        fun resetVisibility() = setVisibility(View.GONE)
         fun setVisibility(visibility: Int) = forEach { it.visibility = visibility }
     }
 }

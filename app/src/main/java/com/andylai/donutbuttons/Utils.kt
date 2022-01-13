@@ -1,16 +1,16 @@
-package com.andylai.donutbuttons;
+package com.andylai.donutbuttons
 
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
+import android.content.res.Resources
+import android.graphics.drawable.Drawable
+import androidx.core.content.res.ResourcesCompat
 
-import androidx.core.content.res.ResourcesCompat;
+object Utils {
+    fun getCompatDrawable(resources: Resources, resId: Int): Drawable {
+        return ResourcesCompat.getDrawable(resources, resId, null)
+            ?: throw Resources.NotFoundException("Resource error")
+    }
 
-public final class Utils {
-	public static Drawable getCompatDrawable(Resources resources, int resId) {
-		return ResourcesCompat.getDrawable(resources, resId, null);
-	}
-
-	public static int getCompatColor(Resources resources, int resId) {
-		return ResourcesCompat.getColor(resources, resId, null);
-	}
+    fun getCompatColor(resources: Resources, resId: Int): Int {
+        return ResourcesCompat.getColor(resources, resId, null)
+    }
 }
