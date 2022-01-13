@@ -37,6 +37,28 @@ object ColorPicker {
 	)
 
 	val RES_PEN_COLOR_DRAWABLES = listOf(
+		R.drawable.ic_donut_pen_picker1,
+		R.drawable.ic_donut_pen_picker2,
+		R.drawable.ic_donut_pen_picker3,
+		R.drawable.ic_donut_pen_picker4,
+		R.drawable.ic_donut_pen_picker5,
+		R.drawable.ic_donut_pen_picker6,
+		R.drawable.ic_donut_pen_picker7,
+		R.drawable.ic_donut_pen_picker8,
+	)
+
+	val RES_HIGHLIGHTER_COLORS_DRAWABLES = listOf(
+		R.drawable.ic_donut_brush_picker9,
+		R.drawable.ic_donut_brush_picker10,
+		R.drawable.ic_donut_brush_picker3,
+		R.drawable.ic_donut_brush_picker4,
+		R.drawable.ic_donut_brush_picker5,
+		R.drawable.ic_donut_brush_picker6,
+		R.drawable.ic_donut_brush_picker7,
+		R.drawable.ic_donut_brush_picker8,
+	)
+
+	val RES_PEN_COLOR_DRAWABLES_SEL = listOf(
 		R.drawable.sel_color_1,
 		R.drawable.sel_color_2,
 		R.drawable.sel_color_3,
@@ -47,7 +69,7 @@ object ColorPicker {
 		R.drawable.sel_color_8,
 	)
 
-	val RES_HIGHLIGHTER_COLORS_DRAWABLES = listOf(
+	val RES_HIGHLIGHTER_COLORS_DRAWABLES_SEL = listOf(
 		R.drawable.sel_color_9,
 		R.drawable.sel_color_10,
 		R.drawable.sel_color_3,

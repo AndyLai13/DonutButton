@@ -8,6 +8,9 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import com.andylai.donutbuttons.ColorPicker.ColorType
+import com.andylai.donutbuttons.ColorPicker.RES_HIGHLIGHTER_COLORS_DRAWABLES
+import com.andylai.donutbuttons.ColorPicker.RES_PEN_COLOR_DRAWABLES
 import java.util.*
 import kotlin.math.*
 
@@ -20,8 +23,6 @@ class DonutButtonsView @JvmOverloads constructor(
     companion object {
         private const val TAG = "DonutButtonsView"
         private const val COUNT = 8
-        private const val COLOR_PRESSED = Color.RED
-        private const val COLOR_NORMAL = Color.WHITE
     }
 
     private val arcButtons: MutableList<ArcButton> = ArrayList()
@@ -35,6 +36,8 @@ class DonutButtonsView @JvmOverloads constructor(
     private var circleButtonSize = 0f
     private var circularButtonSize = 0f
     private var pressedItem = -1
+    private val colorPressed: Int
+    private val colorNormal: Int
     private val paint: Paint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
@@ -43,28 +46,72 @@ class DonutButtonsView @JvmOverloads constructor(
     var callback: Callback? = null
 
     init {
+        colorPressed = getCompatColor(R.color.btn_pressed)
+        colorNormal = Color.WHITE
         initArcButtons()
         isClickable = true
         isFocusable = true
         setLayerType(LAYER_TYPE_SOFTWARE, null)
     }
 
+    fun setUndoEnabled(undoable: Boolean) {
+        arcButtons[5].enabled = undoable
+        invalidate()
+    }
+
+    fun setRedoEnabled(redoable: Boolean) {
+        arcButtons[6].enabled = redoable
+        invalidate()
+    }
+
     fun setPressableButtons(indices: List<Int>, default: Int) {
         pressablePool.addAll(indices)
         if (pressablePool.contains(default)) {
+            pressedItem = default
             setArcBtnPressed(default)
         } else {
             Log.d(TAG, "$default is not pressable arc button.")
         }
     }
 
-    fun setIconDrawables(drawables: List<Drawable>) {
-        if (drawables.size != arcButtons.size) throw IndexOutOfBoundsException("Size is not matched")
-        for (i in 0 until COUNT) arcButtons[i].drawable = drawables[i]
+    fun setColorIconDrawable(colorType: ColorType, index: Int) {
+        if (colorType == ColorType.Pen)
+            setPenIconDrawable(index)
+        else
+            setHighlighterIconDrawable(index)
+    }
+
+    private fun setPenIconDrawable(index: Int) {
+        arcButtons[1].drawable = getCompatDrawable(RES_PEN_COLOR_DRAWABLES[index])
+        invalidate()
+    }
+
+    private fun setHighlighterIconDrawable(index: Int) {
+        arcButtons[2].drawable = getCompatDrawable(RES_HIGHLIGHTER_COLORS_DRAWABLES[index])
+        invalidate()
     }
 
     private fun initArcButtons() {
-        for (i in 0 until COUNT) arcButtons.add(ArcButton(context))
+        arcButtons.add(ArcButton(context, getCompatDrawable(R.drawable.ic_donut_eraser)))
+        arcButtons.add(ArcButton(context, getCompatDrawable(R.drawable.ic_donut_pen_picker5)))
+        arcButtons.add(ArcButton(context, getCompatDrawable(R.drawable.ic_donut_brush_picker9)))
+        arcButtons.add(ArcButton(context, getCompatDrawable(R.drawable.ic_donut_close)))
+        arcButtons.add(ArcButton(context, getCompatDrawable(R.drawable.ic_donut_delete)))
+        arcButtons.add(
+            ArcButton(
+                context = context,
+                drawable = getCompatDrawable(R.drawable.ic_donut_undo),
+                disabledDrawable = getCompatDrawable(R.drawable.ic_donut_undo_disabled),
+            )
+        )
+        arcButtons.add(
+            ArcButton(
+                context = context,
+                drawable = getCompatDrawable(R.drawable.ic_donut_redo),
+                disabledDrawable = getCompatDrawable(R.drawable.ic_donut_redo_disabled),
+            )
+        )
+        arcButtons.add(ArcButton(context, getCompatDrawable(R.drawable.ic_donut_save)))
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -96,7 +143,11 @@ class DonutButtonsView @JvmOverloads constructor(
         for (i in 0 until COUNT) {
             val angle = firstAngle + sweepAngle * i
             val iconRect = getIconRect(iconRadius, circularButtonSize, center, angle)
-            val drawableIcon = arcButtons[i].drawable
+            val drawableIcon = if (arcButtons[i].enabled) {
+                arcButtons[i].drawable
+            } else {
+                arcButtons[i].disabledDrawable ?: arcButtons[i].drawable
+            }
             drawableIcon.bounds = iconRect
             drawableIcon.draw(canvas)
         }
@@ -109,9 +160,12 @@ class DonutButtonsView @JvmOverloads constructor(
     }
 
     private fun drawCentralCircle(canvas: Canvas) {
-        paint.color = COLOR_NORMAL
+        paint.color = colorNormal
         canvas.drawCircle(center.x, center.y, circleRadius, paint)
         val drawableIcon = getCompatDrawable(R.drawable.ic_donut_move)
+        Log.d("Andy", "${drawableIcon.intrinsicWidth}")
+        Log.d("Andy", "${drawableIcon.minimumWidth}")
+        Log.d("Andy", "${circleButtonSize}")
         drawableIcon.bounds = Rect(
             (center.x - circleButtonSize).toInt(),
             (center.y - circleButtonSize).toInt(),
@@ -171,24 +225,26 @@ class DonutButtonsView @JvmOverloads constructor(
 
     private fun onTouchArcButton(event: MotionEvent, degree: Double): Boolean {
         val index = getIndex(degree)
-        if (event.action == MotionEvent.ACTION_DOWN) {
-            setArcBtnPressed(index)
-            return true
-        } else if (event.action == MotionEvent.ACTION_UP) {
-            val isPressable = pressablePool.contains(index)
-            if (isPressable) {
-                if (pressedItem == index) {
-                    callback?.onArcButtonClickUnderPressed(index)
+        if (arcButtons[index].enabled) {
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                setArcBtnPressed(index)
+                return true
+            } else if (event.action == MotionEvent.ACTION_UP) {
+                val isPressable = pressablePool.contains(index)
+                if (isPressable) {
+                    if (pressedItem == index) {
+                        callback?.onArcButtonClickUnderPressed(index)
+                    } else {
+                        pressedItem = index
+                        callback?.onArcButtonPressed(index)
+                    }
                 } else {
-                    pressedItem = index
-                    callback?.onArcButtonPressed(index)
+                    pressedItem = -1
+                    callback?.onArcButtonClick(index)
+                    setArcBtnPressed(-1)
                 }
-            } else {
-                pressedItem = -1
-                callback?.onArcButtonClick(index)
-                setArcBtnPressed(-1)
+                return true
             }
-            return true
         }
         return super.onTouchEvent(event)
     }
@@ -196,9 +252,9 @@ class DonutButtonsView @JvmOverloads constructor(
     private fun setArcBtnPressed(index: Int) {
         for (i in 0 until COUNT) {
             if (i == index)
-                arcButtons[i].color = COLOR_PRESSED
+                arcButtons[i].color = colorPressed
             else
-                arcButtons[i].color = COLOR_NORMAL
+                arcButtons[i].color = colorNormal
         }
         invalidate()
     }
@@ -225,6 +281,7 @@ class DonutButtonsView @JvmOverloads constructor(
     }
 
     private fun getCompatDrawable(resId: Int): Drawable = Utils.getCompatDrawable(resources, resId)
+    private fun getCompatColor(resId: Int): Int = Utils.getCompatColor(resources, resId)
 
     interface Callback {
         fun onCenterTouched()
@@ -233,8 +290,14 @@ class DonutButtonsView @JvmOverloads constructor(
         fun onArcButtonClickUnderPressed(index: Int)
     }
 
-    private class ArcButton(context: Context) {
-        var color: Int = COLOR_NORMAL
-        var drawable: Drawable = Utils.getCompatDrawable(context.resources, R.drawable.ic_donut_pen)
-    }
+    class ArcButton(
+        context: Context,
+        var drawable: Drawable = Utils.getCompatDrawable(
+            context.resources,
+            R.drawable.ic_donut_pen
+        ),
+        var disabledDrawable: Drawable? = null,
+        var color: Int = Color.WHITE,
+        var enabled: Boolean = true
+    )
 }

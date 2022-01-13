@@ -1,0 +1,20 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/ic_toolbar_icon_container_width"
+    android:height="@dimen/ic_toolbar_icon_container_width"
+    android:viewportWidth="122"
+    android:viewportHeight="116">
+  <path
+      android:pathData="M88.983,86.832m-9.018,0a9.018,9.018 0,1 1,18.036 0a9.018,9.018 0,1 1,-18.036 0"
+      android:fillColor="@color/Picker8"/>
+  <path
+      android:pathData="M37.335,91.941a1.25,1.25 0,0 1,-2.011 -0.44L26.921,70.973a2.5,2.5 0,0 1,0.607 -2.774L71.09,27.493a1.25,1.25 0,0 1,1.769 0.062l14.657,15.76a1.25,1.25 0,0 1,-0.062 1.765Z"
+      android:fillColor="@color/Picker8"
+      android:fillType="evenOdd"/>
+  <path
+      android:pathData="M55.765,84.156a1.25,1.25 0,0 1,-1.846 -0.018L32.851,60.642a1.25,1.25 0,0 1,0.019 -1.69l3.899,-4.159a1.25,1.25 0,0 1,1.839 0.016L59.764,78.185a1.25,1.25 0,0 1,-0.012 1.691Z"
+      android:fillColor="@color/colorPrimaryDark"
+      android:fillType="evenOdd"/>
+  <path
+      android:pathData="M61.404,81.833a5.001,5.001 0,0 0,7.14 0.266L96.146,55.947V24.374A3.751,3.751 0,0 0,92.395 20.623H62.76l-27.077,25.64a5.001,5.001 0,0 0,-0.262 6.996Z"
+      android:fillColor="@color/colorSecondary"/>
+</vector>

@@ -14,12 +14,18 @@
         <entry key="app/src/main/res/drawable/ic_anno_pen_white.xml" value="0.3921875" />
         <entry key="app/src/main/res/drawable/ic_anno_redo_white.xml" value="0.3921875" />
         <entry key="app/src/main/res/drawable/ic_anno_save_white.xml" value="0.3921875" />
+        <entry key="app/src/main/res/drawable/ic_anno_undo_disabled.xml" value="0.3861538461538462" />
         <entry key="app/src/main/res/drawable/ic_anno_undo_white.xml" value="0.3921875" />
         <entry key="app/src/main/res/drawable/ic_annotation_pressed.xml" value="0.3921875" />
         <entry key="app/src/main/res/drawable/ic_donut_brush.xml" value="0.3921875" />
+        <entry key="app/src/main/res/drawable/ic_donut_brush_picker10.xml" value="0.3861538461538462" />
         <entry key="app/src/main/res/drawable/ic_donut_close.xml" value="0.11018518518518519" />
+        <entry key="app/src/main/res/drawable/ic_donut_move.xml" value="0.3611111111111111" />
         <entry key="app/src/main/res/drawable/ic_donut_pen.xml" value="0.23055555555555557" />
+        <entry key="app/src/main/res/drawable/ic_donut_pen_picker1.xml" value="0.3861538461538462" />
+        <entry key="app/src/main/res/drawable/ic_donut_redo_disabled.xml" value="0.3921875" />
         <entry key="app/src/main/res/drawable/ic_donut_undo.xml" value="0.23055555555555557" />
+        <entry key="app/src/main/res/drawable/ic_donut_undo_disabled.xml" value="0.3921875" />
         <entry key="app/src/main/res/drawable/ic_eva_move_fill.xml" value="0.3921875" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.11018518518518519" />
         <entry key="app/src/main/res/drawable/ic_toolbar_annotation_color_bk.xml" value="0.228125" />
@@ -34,7 +40,11 @@
         <entry key="app/src/main/res/drawable/sel_color_7.xml" value="0.228125" />
         <entry key="app/src/main/res/drawable/sel_color_8.xml" value="0.228125" />
         <entry key="app/src/main/res/drawable/sel_color_9.xml" value="0.228125" />
+        <entry key="app/src/main/res/drawable/sel_sign_in_submit.xml" value="0.3861538461538462" />
+        <entry key="app/src/main/res/drawable/shape_circle.xml" value="0.3921875" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3619791666666667" />
+        <entry key="app/src/main/res/layout/ciclr_annotation_bar.xml" value="0.37604166666666666" />
+        <entry key="app/src/main/res/layout/test.xml" value="0.37604166666666666" />
       </map>
     </option>
   </component>

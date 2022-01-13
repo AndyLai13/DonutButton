@@ -5,13 +5,73 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/teal_700"
     tools:context=".MainActivity">
 
-    <com.andylai.donutbuttons.DonutButtonsView
-        android:id="@+id/donutButtonView"
-        android:layout_width="@dimen/center_width"
-        android:layout_height="@dimen/center_width"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/open"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="open" />
+
+        <Button
+            android:id="@+id/close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="close" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/brushHide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="brush hide" />
+
+        <Button
+            android:id="@+id/brushShow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="brush show" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/penHide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="pen hide" />
+
+        <Button
+            android:id="@+id/penShow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="pen show" />
+    </LinearLayout>
+
+    <include
+        android:id="@+id/circleAnnotationBar"
+        layout="@layout/ciclr_annotation_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

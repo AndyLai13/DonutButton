@@ -27,4 +27,7 @@
     <color name="Picker8">#29307C</color>
     <color name="Picker9">#f5fc30</color>
     <color name="Picker10">#dcb4ed</color>
+
+    <color name="colorDisableLight">#CFCFCF</color>
+    <color name="colorDisableDark">#4A4A4A</color>
 </resources>

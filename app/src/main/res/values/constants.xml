@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Angle for Constraint Layout circle coordinate:
+        for pen:
+            180f - (7.5f + index * 15f)
+        they are
+            172.5 - 0 * 15 = 172.5
+            172.5 - 1 * 15 = 157.5
+            172.5 - 2 * 15 = 142.5
+            172.5 - 3 * 15 = 127.5
+            172.5 - 4 * 15 = 112.5
+            172.5 - 5 * 15 =  97.5
+            172.5 - 6 * 15 =  82.5
+            172.5 - 7 * 15 =  77.5
+
+        for highlighter:
+            180f + (7.5f + index * 15f)
+        they are
+            187.5 + 0 * 15 = 187.5
+            187.5 + 1 * 15 = 202.5
+            187.5 + 2 * 15 = 217.5
+            187.5 + 3 * 15 = 232.5
+            187.5 + 4 * 15 = 247.5
+            187.5 + 5 * 15 = 262.5
+            187.5 + 6 * 15 = 277.5
+            187.5 + 7 * 15 = 292.5
+    -->
+    <item name="angle_pen_1" format="float" type="dimen">172.5</item>
+    <item name="angle_pen_2" format="float" type="dimen">157.5</item>
+    <item name="angle_pen_3" format="float" type="dimen">142.5</item>
+    <item name="angle_pen_4" format="float" type="dimen">127.5</item>
+    <item name="angle_pen_5" format="float" type="dimen">112.5</item>
+    <item name="angle_pen_6" format="float" type="dimen">97.5</item>
+    <item name="angle_pen_7" format="float" type="dimen">82.5</item>
+    <item name="angle_pen_8" format="float" type="dimen">67.5</item>
+
+    <item name="angle_brush_1" format="float" type="dimen">187.5</item>
+    <item name="angle_brush_2" format="float" type="dimen">202.5</item>
+    <item name="angle_brush_3" format="float" type="dimen">217.5</item>
+    <item name="angle_brush_4" format="float" type="dimen">232.5</item>
+    <item name="angle_brush_5" format="float" type="dimen">247.5</item>
+    <item name="angle_brush_6" format="float" type="dimen">262.5</item>
+    <item name="angle_brush_7" format="float" type="dimen">277.5</item>
+    <item name="angle_brush_8" format="float" type="dimen">292.5</item>
+</resources>

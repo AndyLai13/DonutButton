@@ -3,4 +3,5 @@
     <dimen name="radius_floating">150dp</dimen>
     <dimen name="color_circle_width">20dp</dimen>
     <dimen name="center_width">150dp</dimen>
+    <dimen name="radius">90dp</dimen>
 </resources>
